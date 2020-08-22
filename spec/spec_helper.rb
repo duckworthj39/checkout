@@ -15,6 +15,7 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'checkout'
+require 'total_discount_rule'
 require 'item'
 require 'pry-nav'
 
@@ -48,7 +49,7 @@ RSpec.configure do |config|
   # inherited by the metadata hash of host groups and examples, rather than
   # triggering implicit auto-inclusion in groups with matching metadata.
   config.shared_context_metadata_behavior = :apply_to_host_groups
-  
+
   config.filter_run_when_matching :focus
 
 # The settings below are suggested to provide a good initial experience

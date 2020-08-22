@@ -2,49 +2,94 @@ require 'spec_helper'
 
 RSpec.describe Checkout do
 
-
-	let(:promotional_rules) {}
-	let(:co) { Checkout.new }
+	let(:lavender_heart) { Item.new(001, 'Lavender heart', 9.25) }
+	let(:personalised_cufflinks) { Item.new(002, 'Personalised cufflinks', 45.00) }
+	let(:kids_tshirt) { Item.new(003, 'Kids T-shirt', 19.95) }
 
 	# If I was working on an api these would usually be request specs
 	context 'integration specs' do
-		it 'returns correct total for 001, 002, 003' do
-			# Arrange
-			item1 = Item.new(001, 'Lavender heart', 9.25)
-			item2 = Item.new(002, 'Personalised cufflinks', 45.00)
-			item3 = Item.new(003, 'Kids T-shirt', 19.95)
+		context 'without offers' do
 
-			co.scan(item1)
-			co.scan(item2)
-			co.scan(item3)
-			# Act
-			total = co.total
-			# Assert
-			expect(total).to eq(74.20)
+			let(:promotional_rules) {}
+			let(:co) { Checkout.new }
+
+			it 'returns correct total for 001, 002, 003' do
+				# Having a new item object for each item added allows for 
+				# unique properties per item such as reducing price based on the date
+				# it runs out
+
+				co.scan(lavender_heart)
+				co.scan(personalised_cufflinks)
+				co.scan(kids_tshirt)
+
+				total = co.total
+
+				expect(total).to eq(74.20)
+			end
+		end
+
+		context 'with 10% off totals over a certain amount offer' do
+			it 'returns a total over required amount' do
+				requirement_price = 60.00
+				discount = 20.00
+				rule = TotalDiscountRule.new(requirement_price, discount)
+
+				promotional_rules = [rule]
+				co = Checkout.new(promotional_rules: promotional_rules)
+	
+				co.scan(personalised_cufflinks)
+				co.scan(personalised_cufflinks)
+	
+				total = co.total
+	
+				expect(total).to eq(72.00)
+	
+			end
+
+			it 'returns a total below the required amount' do
+				requirement_price = 100
+				discount = 20.00
+				rule = TotalDiscountRule.new(requirement_price, discount)
+
+				promotional_rules = [rule]
+				co = Checkout.new(promotional_rules: promotional_rules)
+	
+				co.scan(personalised_cufflinks)
+				co.scan(personalised_cufflinks)
+	
+				total = co.total
+	
+				expect(total).to eq(90.00)
+	
+			end
 		end
 	end
 
-	xcontext 'challenge requirements' do
+	context 'challenge requirements' do
+
+		let(:promotional_rules) { [TotalDiscountRule.new(60.00, 10.00)] }
+		let(:co) { Checkout.new(promotional_rules: promotional_rules) }
+
 		it 'returns the correct total for 001, 002, 003' do
-			co.scan(001)
-			co.scan(002)
-			co.scan(003)
-			expect(co.total).to eq(9.25)
+			co.scan(lavender_heart)
+			co.scan(personalised_cufflinks)
+			co.scan(kids_tshirt)
+			expect(co.total).to eq(66.78)
 		end
 
 		it 'returns the correct total for 001, 003, 001' do
-			co.scan(001)
-			co.scan(003)
-			co.scan(001)
-			expect(co.total).to eq(45.00)
+			co.scan(lavender_heart)
+			co.scan(kids_tshirt)
+			co.scan(lavender_heart)
+			expect(co.total).to eq(36.95)
 		end
 
 		it 'returns the correct total for 001, 002, 001, 003' do
-			co.scan(001)
-			co.scan(002)
-			co.scan(001)
-			co.scan(003)
-			expect(co.total).to eq(19.95)
+			co.scan(lavender_heart)
+			co.scan(personalised_cufflinks)
+			co.scan(lavender_heart)
+			co.scan(kids_tshirt)
+			expect(co.total).to eq(73.76)
 		end
 	end
 end
