@@ -29,7 +29,7 @@ RSpec.describe Checkout do
 		end
 
 		context 'with 10% off totals over a certain amount offer' do
-			it 'returns a total over required amount' do
+			it 'returns the correct total when over required amount' do
 				requirement_price = 60.00
 				discount = 20.00
 				rule = TotalDiscountRule.new(requirement_price, discount)
@@ -46,7 +46,7 @@ RSpec.describe Checkout do
 	
 			end
 
-			it 'returns a total below the required amount' do
+			it 'returns the correct total when below the required amount' do
 				requirement_price = 100
 				discount = 20.00
 				rule = TotalDiscountRule.new(requirement_price, discount)
@@ -63,7 +63,7 @@ RSpec.describe Checkout do
 			end
 		end
 
-		context 'when more than one of a certain item the price is reduced' do
+		context 'when there is more than one of a certain item the price is reduced' do
 			it 'returns the correct total when when requirement is met' do
 				requirement_quantity = 2
 				new_price = 8.50
