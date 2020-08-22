@@ -60,14 +60,37 @@ RSpec.describe Checkout do
 				total = co.total
 	
 				expect(total).to eq(90.00)
+			end
+		end
+
+		context 'when more than one of a certain item the price is reduced' do
+			it 'returns the correct total when when requirement is met' do
+				requirement_quantity = 2
+				new_price = 8.50
+
+				rule = ItemDiscountRule.new(requirement_quantity, new_price, lavender_heart.name)
+
+				promotional_rules = [rule]
+				co = Checkout.new(promotional_rules: promotional_rules)
 	
+				co.scan(lavender_heart)
+				co.scan(lavender_heart)
+	
+				total = co.total
+	
+				expect(total).to eq(17.00)
 			end
 		end
 	end
 
+
+
 	context 'challenge requirements' do
 
-		let(:promotional_rules) { [TotalDiscountRule.new(60.00, 10.00)] }
+		let(:promotional_rules) {[
+				TotalDiscountRule.new(60.00, 10.00),
+				ItemDiscountRule.new(2, 8.50, lavender_heart.name)
+			]}
 		let(:co) { Checkout.new(promotional_rules: promotional_rules) }
 
 		it 'returns the correct total for 001, 002, 003' do
