@@ -86,7 +86,6 @@ RSpec.describe Checkout do
 
 
 	context 'challenge requirements' do
-
 		let(:promotional_rules) {[
 				TotalDiscountRule.new(60.00, 10.00),
 				ItemDiscountRule.new(2, 8.50, lavender_heart.name)
