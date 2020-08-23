@@ -12,7 +12,13 @@ class ItemDiscountRule
 		items.count >= requirement_quantity
 	end
 
-	def calculate_offer(items)
-		(items.count * new_price).round(2)
+	# calculates the new total by taking away the difference
+	# from the discounted price
+	def calculate_total_after_offer(total, items)
+		new_item_total = new_price * items.count
+		old_item_total = items.first.price * items.count
+
+		deduction = (old_item_total - new_item_total).round(2)
+		total - deduction
 	end
 end

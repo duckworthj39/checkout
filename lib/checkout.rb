@@ -20,13 +20,12 @@ class Checkout
 		total_discount_rules = promotional_rules.select { |rule| rule.instance_of?(total_discount)}
 		item_rules = promotional_rules.select { |rule| rule.instance_of?(item_rule)}
 
-		total = apply_item_rule_discounts(item_rules, total)
-
 		# Calculate totals for items without offers so far
 		items.each do |item|
 			total += item.price	
 		end
 
+		total = apply_item_rule_discounts(item_rules, total)
 		total = apply_total_discounts(total_discount_rules, total)
 
 		total.round(2)
@@ -38,9 +37,7 @@ class Checkout
 		item_rules.each do |rule|
 			matching_items = items.select { |item| item.name == rule.item_name}
 			next unless rule.meets_requirements?(matching_items)
-			# Remove items so they are not added to total after discount added
-			matching_items.each { |matching_item| items.delete(matching_item)}
-			total += rule.calculate_offer(matching_items)
+			total = rule.calculate_total_after_offer(total, matching_items)
 		end
 
 		total
@@ -49,7 +46,7 @@ class Checkout
 	def apply_total_discounts(total_discount_rules, total)
 		total_discount_rules.each do |rule|
 			next unless rule.meets_requirements?(total)
-			total = rule.calculate_offer(total)
+			total = rule.calculate_total_after_offer(total)
 		end
 
 		total

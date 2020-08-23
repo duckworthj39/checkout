@@ -12,8 +12,8 @@ class TotalDiscountRule
 		total >= requirement_price
 	end
 
-	def calculate_offer(total)
-		discount_value = total * (discount.to_f / 100)
-		(total - discount_value).round(2)
+	def calculate_total_after_offer(total)
+		deduction = total * (discount.to_f / 100)
+		(total - deduction).round(2)
 	end
 end

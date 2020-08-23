@@ -4,7 +4,7 @@ RSpec.describe TotalDiscountRule do
 
 	it 'calculates the correct total' do
 		rule = TotalDiscountRule.new(0, 50)
-		expect(rule.calculate_offer(4.50)).to eq(2.25)
+		expect(rule.calculate_total_after_offer(4.50)).to eq(2.25)
 	end
 
 	it 'returns true when the requirement is met' do

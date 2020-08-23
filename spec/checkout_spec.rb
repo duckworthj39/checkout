@@ -32,7 +32,7 @@ RSpec.describe Checkout do
 			promotional_rules = [spy(
 				'TotalDiscountRule', 
 				meets_requirements?: true,
-				calculate_offer: 76.50
+				calculate_total_after_offer: 76.50
 			)]
 			co = Checkout.new(promotional_rules: promotional_rules)
 
@@ -55,7 +55,7 @@ RSpec.describe Checkout do
 			expect(item1).to have_received(:price).once
 			expect(item2).to have_received(:price).once
 			expect(promotional_rules[0]).to have_received(:meets_requirements?).once
-			expect(promotional_rules[0]).to have_received(:calculate_offer).once
+			expect(promotional_rules[0]).to have_received(:calculate_total_after_offer).once
 			expect(total).to eq(76.50)
 
 		end
@@ -65,7 +65,7 @@ RSpec.describe Checkout do
 			promotional_rules = [spy(
 				'ItemDiscountRule', 
 				meets_requirements?: true,
-				calculate_offer: 1
+				calculate_total_after_offer: 81
 			)]
 			co = Checkout.new(promotional_rules: promotional_rules)
 
@@ -88,7 +88,7 @@ RSpec.describe Checkout do
 			expect(item1).to have_received(:price).once
 			expect(item2).to have_received(:price).once
 			expect(promotional_rules[0]).to have_received(:meets_requirements?).once
-			expect(promotional_rules[0]).to have_received(:calculate_offer).once
+			expect(promotional_rules[0]).to have_received(:calculate_total_after_offer).once
 			expect(total).to eq(81)
 		end
 	end
