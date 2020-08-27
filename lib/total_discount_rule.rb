@@ -3,7 +3,7 @@ class TotalDiscountRule
 	attr_reader :requirement_price, :discount
 
 	# discount is a percentage
-	def initialize(requirement_price, discount)
+	def initialize(requirement_price:, discount:)
 		@requirement_price = requirement_price
 		@discount = discount
 	end

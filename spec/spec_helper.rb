@@ -17,6 +17,7 @@
 require 'checkout'
 require 'total_discount_rule'
 require 'item'
+require 'rule_factory'
 require 'pry-nav'
 
 RSpec.configure do |config|

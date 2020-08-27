@@ -30,9 +30,9 @@ RSpec.describe Checkout do
 
 		context 'with 10% off totals over a certain amount offer' do
 			it 'returns the correct total when over required amount' do
-				requirement_price = 60.00
-				discount = 20.00
-				rule = TotalDiscountRule.new(requirement_price, discount)
+				
+				params = { requirement_price: 60.00, discount: 20.00 }
+				rule = RuleFactory.new.get_rule('TotalDiscount', params)
 
 				promotional_rules = [rule]
 				co = Checkout.new(promotional_rules: promotional_rules)
@@ -47,9 +47,9 @@ RSpec.describe Checkout do
 			end
 
 			it 'returns the correct total when below the required amount' do
-				requirement_price = 100
-				discount = 20.00
-				rule = TotalDiscountRule.new(requirement_price, discount)
+
+				params = { requirement_price: 100.00, discount: 20.00 }
+				rule = RuleFactory.new.get_rule('TotalDiscount', params)
 
 				promotional_rules = [rule]
 				co = Checkout.new(promotional_rules: promotional_rules)
@@ -68,7 +68,8 @@ RSpec.describe Checkout do
 				requirement_quantity = 2
 				new_price = 8.50
 
-				rule = ItemDiscountRule.new(requirement_quantity, new_price, lavender_heart.name)
+				params = {requirement_quantity: 2, new_price: 8.50, item_name: lavender_heart.name}
+				rule = RuleFactory.new.get_rule('ItemDiscount', params)
 
 				promotional_rules = [rule]
 				co = Checkout.new(promotional_rules: promotional_rules)
@@ -86,10 +87,21 @@ RSpec.describe Checkout do
 
 
 	context 'challenge requirements' do
-		let(:promotional_rules) {[
-				TotalDiscountRule.new(60.00, 10.00),
-				ItemDiscountRule.new(2, 8.50, lavender_heart.name)
-			]}
+		let(:promotional_rules) do
+
+			rule1 = RuleFactory.new.get_rule(
+				'ItemDiscount',
+				{ requirement_quantity: 2, new_price: 8.50, item_name: lavender_heart.name }
+			)
+
+			rule2 = RuleFactory.new.get_rule(
+				'TotalDiscount',
+				{ requirement_price: 60.00, discount: 10.00 }
+			)
+
+			$promotional_rules = [rule1, rule2]
+		end
+
 		let(:co) { Checkout.new(promotional_rules: promotional_rules) }
 
 		it 'returns the correct total for 001, 002, 003' do

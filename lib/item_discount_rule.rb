@@ -2,7 +2,7 @@ class ItemDiscountRule
 
 	attr_reader :requirement_quantity, :new_price, :item_name
 
-	def initialize(requirement_quantity, new_price, item_name)
+	def initialize(requirement_quantity:, new_price:, item_name:)
 		@requirement_quantity = requirement_quantity
 		@new_price = new_price
 		@item_name = item_name
